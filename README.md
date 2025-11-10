@@ -1,6 +1,6 @@
 # GFF3-LTR-Mapper
 
-A command-line workflow for summarising EDTA "intact" GFF3 annotations into scientist-friendly tables and postcards (ASCII + SVG) per genome, chromosome, or custom identity cohort.
+A command-line workflow for summarising EDTA "intact" GFF3 annotations into publication-ready tables and visual postcards (ASCII + SVG) per genome, chromosome, or custom identity cohort. Distributed under the [MIT License](LICENSE).
 
 ## Obtain & Run
 1. Download the GitHub ZIP archive (or clone the repository) and unzip it anywhere.
