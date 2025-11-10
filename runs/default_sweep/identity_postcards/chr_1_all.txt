@@ -1,0 +1,12 @@
+> AVG chr_1:all  range:-–-
+  n: 486
+  median len: 6571.5 bp
+  IQR: 5048–10775 bp
+  identity mean:0.986 median:0.989 range:-–-
+  LTR5 median: 1046.5 bp   LTR3 median: 1047.0 bp
+  Internal median: 4478.0 bp
+  strand +:200 (41%)/-:188 (39%)
+
+================-------------------------------------------------------------------=================
+LTR5:1046 | INT:5524 | LTR3:6572
+Q25:5048bp  Q75:10775bp
