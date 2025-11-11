@@ -1,0 +1,19 @@
+##gff-version 3
+chr_2	EDTA	repeat_region	1000	2000	.	+	.	ID=repeat_region_high_1;Name=chr_2:1000..2000;Classification=LTR/Copia;Sequence_ontology=SO:0000657;Method=structural
+chr_2	EDTA	LTR_retrotransposon	1000	2000	.	+	.	ID=rr_high_1_ltr;Parent=repeat_region_high_1;Classification=LTR/Copia;Sequence_ontology=SO:0000186;ltr_identity=0.979;motif=TGCA
+chr_2	EDTA	long_terminal_repeat	1000	1200	.	+	.	ID=rr_high_1_ltr5;Parent=repeat_region_high_1
+chr_2	EDTA	long_terminal_repeat	1801	2000	.	+	.	ID=rr_high_1_ltr3;Parent=repeat_region_high_1
+chr_2	EDTA	target_site_duplication	995	1000	.	+	.	ID=rr_high_1_tsd5;Parent=repeat_region_high_1;tsd=AATAT
+chr_2	EDTA	target_site_duplication	2000	2005	.	+	.	ID=rr_high_1_tsd3;Parent=repeat_region_high_1;tsd=AATAT
+chr_2	EDTA	repeat_region	3000	4200	.	-	.	ID=repeat_region_high_2;Name=chr_2:3000..4200;Classification=LTR/Gypsy;Sequence_ontology=SO:0000657;Method=structural
+chr_2	EDTA	LTR_retrotransposon	3000	4200	.	-	.	ID=rr_high_2_ltr;Parent=repeat_region_high_2;Classification=LTR/Gypsy;Sequence_ontology=SO:0000186;ltr_identity=0.982;motif=TACT
+chr_2	EDTA	long_terminal_repeat	3000	3250	.	-	.	ID=rr_high_2_ltr5;Parent=repeat_region_high_2
+chr_2	EDTA	long_terminal_repeat	3951	4200	.	-	.	ID=rr_high_2_ltr3;Parent=repeat_region_high_2
+chr_2	EDTA	target_site_duplication	2995	3000	.	-	.	ID=rr_high_2_tsd5;Parent=repeat_region_high_2;tsd=TACAT
+chr_2	EDTA	target_site_duplication	4200	4204	.	-	.	ID=rr_high_2_tsd3;Parent=repeat_region_high_2;tsd=TACAT
+chr_2	EDTA	repeat_region	6000	6800	.	+	.	ID=repeat_region_low_1;Name=chr_2:6000..6800;Classification=LTR/Copia;Sequence_ontology=SO:0000657;Method=structural
+chr_2	EDTA	LTR_retrotransposon	6000	6800	.	+	.	ID=rr_low_1_ltr;Parent=repeat_region_low_1;Classification=LTR/Copia;Sequence_ontology=SO:0000186;ltr_identity=0.931;motif=TGCA
+chr_2	EDTA	long_terminal_repeat	6000	6200	.	+	.	ID=rr_low_1_ltr5;Parent=repeat_region_low_1
+chr_2	EDTA	long_terminal_repeat	6601	6800	.	+	.	ID=rr_low_1_ltr3;Parent=repeat_region_low_1
+chr_2	EDTA	target_site_duplication	5995	6000	.	+	.	ID=rr_low_1_tsd5;Parent=repeat_region_low_1;tsd=GCTTT
+chr_2	EDTA	target_site_duplication	6800	6803	.	+	.	ID=rr_low_1_tsd3;Parent=repeat_region_low_1;tsd=GCTTT

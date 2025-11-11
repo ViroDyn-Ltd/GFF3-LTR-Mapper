@@ -1,11 +1,19 @@
 # Example Outputs
 
-These captures come from the **ddAraThal4.1** EDTA `intact` annotations provided under `files_for_Alex`. They document a focused `chr_2` sweep so you can see exactly what the CLI prints and writes.
+These captures come from a representative EDTA `intact` dataset and document a focused `chr_2` sweep.
 
 ## Reproducing this example
+Set an environment variable (or substitute your own absolute path) pointing to the EDTA file:
+
+```bash
+export GFF3=/path/to/your/EDTA.intact.gff3
+```
+
+Then run:
+
 ```bash
 python -m gff3_ltr_map.cli \
-  /home/alex-humphries/Desktop/TE-work/files_for_Alex-20250616T095713Z-1-001/files_for_Alex/ddAraThal4.1.fa.mod.EDTA.intact.gff3 \
+  "$GFF3" \
   --chrom chr_2 \
   --outdir runs/example_chr2 \
   --summary runs/example_chr2/summary.tsv \
@@ -15,7 +23,7 @@ python -m gff3_ltr_map.cli \
   --top-k 5 \
   --min-n 25
 ```
-Adjust the input path or `--outdir` to fit your environment.
+Adjust `GFF3` or `--outdir` as needed for your workstation.
 
 ## Identity-bin table (CLI & TSV excerpt)
 ```

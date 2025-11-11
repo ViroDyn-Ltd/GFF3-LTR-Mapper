@@ -59,5 +59,9 @@ Every run prints:
 - `docs/USAGE.md` – flags, scenarios, and CLI behaviour.
 - `docs/EXAMPLES.md` – sample tables, ASCII postcard, and an actual SVG postcard screenshot.
 
+## Testing
+- A miniature EDTA intact extract lives in `tests/data/sample_edta_chr2.gff3` so you can exercise the parser, aggregator, and CLI without the full datasets.
+- Run `python -m pytest` from the repository root to execute the regression suite (CLI tests stage outputs under a temporary directory and clean up automatically).
+
 ## License
 MIT (see `LICENSE`).
