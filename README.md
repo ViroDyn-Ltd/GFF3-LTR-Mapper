@@ -1,5 +1,7 @@
 # GFF3-LTR-Mapper
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17576186.svg)](https://doi.org/10.5281/zenodo.17576186)
+
 A command-line workflow for summarising EDTA "intact" GFF3 annotations into publication-ready tables and visual postcards (ASCII + SVG) per genome, chromosome, or custom identity cohort. Distributed under the [MIT License](LICENSE).
 
 ## Obtain & Run
