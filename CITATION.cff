@@ -5,7 +5,7 @@ type: software
 authors:
   - name: "ViroDyn Ltd"
 version: "0.3.0"
-doi: 10.5281/zenodo.17576186
+doi: 10.5281/zenodo.19489691
 license: MIT
 repository-code: "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper"
 url: "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper"
