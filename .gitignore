@@ -11,6 +11,7 @@ dist/
 .out*
 /.venv
 /.approval_tests_temp/
+/zenodo_release/
 tmp_*/
 runs/
 out/

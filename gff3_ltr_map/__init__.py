@@ -6,7 +6,6 @@ __all__ = [
     "parser",
     "model",
     "render_ascii",
-    "render_svg",
     "summary",
     "aggregates",
     "average_map",

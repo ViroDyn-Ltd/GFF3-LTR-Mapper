@@ -1,8 +1,8 @@
 # GFF3-LTR-Mapper
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17576186.svg)](https://doi.org/10.5281/zenodo.17576186)
+DOI: <https://doi.org/10.5281/zenodo.17576186>
 
-A command-line workflow for auditing and summarising EDTA intact LTR GFF3 annotations into QC reports, cohort tables, and cross-sample comparison TSVs. The parser is strict about intact-LTR structure, keeps non-destructive QC traces for every `repeat_region`, and can run either on a single GFF3 or an entire directory of EDTA outputs. Distributed under the [MIT License](LICENSE).
+A command-line workflow for auditing and summarising EDTA intact LTR GFF3 annotations into QC reports, cohort tables, cross-sample comparison TSVs, and optional ASCII postcards. The parser is strict about intact-LTR structure, keeps non-destructive QC traces for every `repeat_region`, and can run either on a single GFF3 or an entire directory of EDTA outputs. Distributed under the [MIT License](LICENSE).
 
 ## Scope
 - Input is expected to be **EDTA intact-element GFF3** output only.
@@ -81,11 +81,11 @@ gff3-ltr-map /absolute/path/sample.intact.gff3 \
 - The CLI prints the simplified region summary directly to the terminal.
 - Region summaries now include `window_bp`, `intact_per_mbp`, and `coverage_pct` so cross-species window comparisons are directly sortable.
 
-### Visual controls
+### ASCII postcard controls
 - `--visual none|postcard|postcard+quantiles`
-- `--out text|text+svg` (postcard files still written silently; CLI only logs their directory and extensions).
+- `--ascii` emits one plain-text map per intact element.
 
-Full command cookbook lives in `docs/USAGE.md`, and example outputs (tables, ASCII postcards, SVG preview) sit in `docs/EXAMPLES.md`.
+Full command cookbook lives in `docs/USAGE.md`, and example outputs sit in `docs/EXAMPLES.md`.
 
 ## Outputs
 - `summary.tsv` : one row per `repeat_region` with normalized attributes, retrotransposon type, QC status, and intact/non-intact state.
@@ -94,9 +94,9 @@ Full command cookbook lives in `docs/USAGE.md`, and example outputs (tables, ASC
 - `scientist_elements.tsv` : simplified intact-element detail table, kept as a secondary audit view.
 - `cohort_aggregates.tsv` : intact-element summaries across genome/scaffold/superfamily cohorts.
 - `identity_bins.tsv` (path configurable via `--aggregate-tsv`): per-cohort stats (counts, medians, TSD lengths, motif/TSD leaders, consensus warnings, low-N notes).
-- `identity_postcards/*.txt|*.svg` : aggregate postcards per scope+identity bin, including the metrics table and annotated bar (LTR labels + Q25/Q75 markers).
+- `identity_postcards/*.txt` : aggregate ASCII postcards per scope+identity bin, including the metrics table and annotated bar (LTR labels + Q25/Q75 markers).
 - Optional `elements.bed` when `--bed` is provided.
-- Legacy per-element postcards remain available via `--ascii/--svg`.
+- Legacy per-element ASCII postcards remain available via `--ascii`.
 - In directory mode, each sample gets its own nested output folder with `scientist_regions.tsv` and `scientist_elements.tsv`, and the run root also contains `batch_samples.tsv`, `batch_superfamilies.tsv`, and `scientist_batch.tsv`.
 
 ## CLI logging
@@ -116,7 +116,7 @@ Every run prints:
 
 ## Documentation
 - `docs/USAGE.md` – flags, scenarios, and CLI behaviour.
-- `docs/EXAMPLES.md` – sample tables, ASCII postcard, and an actual SVG postcard screenshot.
+- `docs/EXAMPLES.md` – sample tables and ASCII postcard examples.
 - `CITATION.cff` – citation metadata for reuse and release archiving.
 
 ## License

@@ -13,7 +13,6 @@ gff3-ltr-map /path/to/EDTA.intact.gff3 \
   --outdir runs/default_sweep \
   --validation error \
   --visual postcard+quantiles \
-  --out text+svg \
   --summary runs/default_sweep/summary.tsv \
   --top-k 5 \
   --min-n 25
@@ -26,7 +25,7 @@ gff3-ltr-map /path/to/EDTA.intact.gff3 \
   - `runs/default_sweep/scientist_elements.tsv`
   - `runs/default_sweep/cohort_aggregates.tsv`
   - `runs/default_sweep/identity_bins.tsv`
-  - `runs/default_sweep/identity_postcards/*.txt` and `.svg`
+  - `runs/default_sweep/identity_postcards/*.txt`
 
 ## Directory / batch mode
 ```
@@ -49,7 +48,6 @@ gff3-ltr-map /path/to/EDTA.intact.gff3 \
   --chrom chr_2 \
   --identity 'bins=0.90..0.94,>=0.94' \
   --visual postcard+quantiles \
-  --out text+svg \
   --summary runs/chr2_visuals/summary.tsv
 ```
 
@@ -81,7 +79,7 @@ gff3-ltr-map /path/to/edta_outputs \
 
 ## Genome-only
 ```
-gff3-ltr-map /path/to/EDTA.intact.gff3 --chrom genome --visual postcard --out text
+gff3-ltr-map /path/to/EDTA.intact.gff3 --chrom genome --visual postcard
 ```
 
 ## Important flags
@@ -89,7 +87,6 @@ gff3-ltr-map /path/to/EDTA.intact.gff3 --chrom genome --visual postcard --out te
 - `--identity all` or `>=0.97` or `bins=0.90..0.94,>=0.94`
 - `--validation error|warn|off` controls how the CLI reacts to non-intact structural blocks.
 - `--visual none|postcard|postcard+quantiles`
-- `--out text|text+svg`
 - `--group-aggregates genome,scaffold,superfamily` writes cohort summaries by those groups.
 - `--top-k N` controls motif/TSD leaderboards.
 - `--min-n N` defines the low-N warning threshold.
@@ -101,7 +98,7 @@ gff3-ltr-map /path/to/EDTA.intact.gff3 --chrom genome --visual postcard --out te
 - `--scientist-cli-max-rows N` controls how many simplified rows are printed directly to the terminal.
 - `--bed FILE` writes repeat_region spans (0-based BED).
 - `--limit-files N` trims directory mode to the first `N` files.
-- `--ascii/--svg` (legacy) still emit per-element postcards if needed.
+- `--ascii` still emits per-element ASCII postcards if needed.
 
 ## CLI logging
 Each run prints:

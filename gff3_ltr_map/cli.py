@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable, List, Optional, Sequence, Tuple
 
 from .aggregates import AggregateRow, compute_aggregates, summarize_cohort, write_aggregate_json, write_aggregate_tsv
-from .average_map import average_ascii_map, average_svg_map, build_average_profile
+from .average_map import average_ascii_map, build_average_profile
 from .batch import (
     BatchSampleRow,
     BatchSuperfamilyRow,
@@ -22,7 +22,6 @@ from .batch import (
 from .model import RepeatRegion
 from .parser import load_gff, to_repeat_region_object
 from .render_ascii import ascii_map
-from .render_svg import svg_map
 from .scientist_view import (
     ScientistRegionRow,
     build_scientist_region_row,
@@ -112,13 +111,12 @@ class SamplePaths:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="EDTA intact GFF3 -> QC-validated LTR summaries, aggregates, and postcards",
+        description="EDTA intact GFF3 -> QC-validated LTR summaries, TSV comparisons, and ASCII postcards",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("input_path", help="Input EDTA intact GFF3, .gff3.gz, or directory of such files")
     parser.add_argument("--outdir", default="out", help="Output directory for map and report artifacts")
     parser.add_argument("--ascii", action="store_true", help="Emit ASCII maps (*.txt) for intact elements")
-    parser.add_argument("--svg", action="store_true", help="Emit SVG maps (*.svg) for intact elements")
     parser.add_argument("--summary", default="summary.tsv", help="Single-file mode: path to summary TSV")
     parser.add_argument("--validation-report", help="Single-file mode: path to validation TSV")
     parser.add_argument(
@@ -142,17 +140,9 @@ def _parse_args() -> argparse.Namespace:
             "Elements overlapping the interval are retained."
         ),
     )
-    parser.add_argument("--width", type=int, default=800, help="SVG canvas width (px) or ASCII columns")
-    parser.add_argument("--height", type=int, default=80, help="SVG canvas height (px)")
-    parser.add_argument(
-        "--palette",
-        choices=["classic", "mono", "protanopia"],
-        default="classic",
-        help="Color palette for SVG maps",
-    )
+    parser.add_argument("--width", type=int, default=100, help="ASCII map width in columns")
     parser.add_argument("--bed", help="Single-file mode: also emit BED with intact repeat_region spans")
-    parser.add_argument("--index-html", action="store_true", help="Generate HTML index embedding SVGs")
-    parser.add_argument("--ruler", action="store_true", help="Add coordinate ruler to ASCII/SVG outputs")
+    parser.add_argument("--ruler", action="store_true", help="Add coordinate ruler to ASCII outputs")
     parser.add_argument("--workers", type=int, default=1, help="Parallel workers for per-element rendering")
     parser.add_argument("--max-elements", type=int, help="Stop after N elements (debug)")
     parser.add_argument("--limit-files", type=int, help="Directory mode: stop after N input files")
@@ -170,13 +160,6 @@ def _parse_args() -> argparse.Namespace:
         default="none",
         help="Aggregate visual output flavor",
     )
-    parser.add_argument(
-        "--out",
-        choices=["text", "text+svg"],
-        default="text",
-        dest="visual_output",
-        help="Aggregate postcard artifact types",
-    )
     parser.add_argument("--top-k", type=int, default=3, help="Top-K motifs/TSDs to report")
     parser.add_argument(
         "--min-n",
@@ -189,18 +172,6 @@ def _parse_args() -> argparse.Namespace:
         type=int,
         default=100,
         help="ASCII width for aggregate postcards",
-    )
-    parser.add_argument(
-        "--postcard-svg-width",
-        type=int,
-        default=800,
-        help="SVG width for aggregate postcards",
-    )
-    parser.add_argument(
-        "--postcard-svg-height",
-        type=int,
-        default=120,
-        help="SVG height for aggregate postcards",
     )
     parser.add_argument(
         "--aggregate-tsv",
@@ -296,19 +267,6 @@ def _write_ascii(elem: RepeatRegion, outdir: str, width: int, ruler: bool) -> No
         handle.write(text)
 
 
-def _write_svg(
-    elem: RepeatRegion,
-    outdir: str,
-    width: int,
-    height: int,
-    ruler: bool,
-    palette: str,
-) -> None:
-    drawing = svg_map(elem, width=width, height=height, ruler=ruler, palette=palette)
-    path = os.path.join(outdir, f"{elem.id}.svg")
-    drawing.saveas(path)
-
-
 def _write_bed(elems: Iterable[RepeatRegion], bed_path: str) -> None:
     _ensure_parent(bed_path)
     with open(bed_path, "w", encoding="utf-8") as handle:
@@ -316,19 +274,6 @@ def _write_bed(elems: Iterable[RepeatRegion], bed_path: str) -> None:
             handle.write(
                 f"{elem.scaffold}\t{elem.start - 1}\t{elem.end}\t{elem.id}\t0\t{elem.strand}\n"
             )
-
-
-def _write_index(elems: Iterable[RepeatRegion], outdir: str, width: int, height: int) -> None:
-    html_path = os.path.join(outdir, "index.html")
-    with open(html_path, "w", encoding="utf-8") as handle:
-        handle.write("<html><head><meta charset='utf-8'><title>GFF3 LTR Maps</title></head><body>\n")
-        for elem in elems:
-            handle.write(f"<h3>{elem.scaffold}:{elem.id}</h3>\n")
-            handle.write(
-                f"<object data='{elem.id}.svg' type='image/svg+xml' width='{width}' "
-                f"height='{height}'></object>\n"
-            )
-        handle.write("</body></html>\n")
 
 
 def _build_identity_reports(
@@ -395,7 +340,6 @@ def _write_identity_postcards(reports: List[IdentityReport], args: argparse.Name
     if args.visual == "none":
         return
     show_quantiles = args.visual == "postcard+quantiles"
-    svg_enabled = args.visual_output == "text+svg"
     postcard_dir = os.path.join(outdir, "identity_postcards")
     _ensure_dir(postcard_dir)
     written_files: List[str] = []
@@ -414,22 +358,10 @@ def _write_identity_postcards(reports: List[IdentityReport], args: argparse.Name
         with open(ascii_path, "w", encoding="utf-8") as handle:
             handle.write(ascii_txt)
         written_files.append(f"{base}.txt")
-        if svg_enabled:
-            drawing = average_svg_map(
-                profile,
-                width=args.postcard_svg_width,
-                height=args.postcard_svg_height,
-                palette=args.palette,
-                show_quantiles=show_quantiles,
-            )
-            svg_path = os.path.join(postcard_dir, f"{base}.svg")
-            drawing.saveas(svg_path)
-            written_files.append(f"{base}.svg")
     if written_files:
-        exts = sorted({path.split(".")[-1] for path in written_files})
         print(
             f"[gff3-ltr-map] Identity postcards saved under {postcard_dir} "
-            f"({', '.join(exts)} files: {len(written_files)})"
+            f"(txt files: {len(written_files)})"
         )
 
 
@@ -757,35 +689,19 @@ def _write_group_aggregates(
 
 
 def _render_elements(elements: Sequence[RepeatRegion], paths: SamplePaths, args: argparse.Namespace) -> None:
-    if not (args.ascii or args.svg):
+    if not args.ascii:
         return
     workers = max(1, args.workers)
     if workers > 1:
         futures = []
         with ProcessPoolExecutor(max_workers=workers) as executor:
             for elem in elements:
-                if args.ascii:
-                    futures.append(executor.submit(_write_ascii, elem, paths.outdir, args.width, args.ruler))
-                if args.svg:
-                    futures.append(
-                        executor.submit(
-                            _write_svg,
-                            elem,
-                            paths.outdir,
-                            args.width,
-                            args.height,
-                            args.ruler,
-                            args.palette,
-                        )
-                    )
+                futures.append(executor.submit(_write_ascii, elem, paths.outdir, args.width, args.ruler))
             for future in as_completed(futures):
                 future.result()
     else:
         for elem in elements:
-            if args.ascii:
-                _write_ascii(elem, paths.outdir, args.width, args.ruler)
-            if args.svg:
-                _write_svg(elem, paths.outdir, args.width, args.height, args.ruler, args.palette)
+            _write_ascii(elem, paths.outdir, args.width, args.ruler)
 
 
 def _run_sample(
@@ -849,17 +765,8 @@ def _run_sample(
         print(f"[gff3-ltr-map] BED written to {paths.bed}")
 
     _render_elements(intact_elements, paths, args)
-    if args.ascii or args.svg:
-        print(
-            f"[gff3-ltr-map] Per-element postcard rendering completed "
-            f"(ascii={args.ascii}, svg={args.svg})"
-        )
-
-    if args.index_html:
-        if args.svg:
-            _write_index(intact_elements, paths.outdir, args.width, args.height)
-        else:
-            print("--index-html requested but --svg not enabled; skipping index generation")
+    if args.ascii:
+        print("[gff3-ltr-map] Per-element ASCII postcard rendering completed")
 
     try:
         group_types = _parse_group_aggregates(args.group_aggregates)

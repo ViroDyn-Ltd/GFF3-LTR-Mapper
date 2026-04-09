@@ -23,8 +23,6 @@ def test_cli_generates_qc_and_identity_outputs(tmp_path, sample_gff_path):
         str(validation_path),
         "--visual",
         "postcard+quantiles",
-        "--out",
-        "text+svg",
         "--identity",
         "bins=0.90..0.94,>=0.94",
         "--top-k",
@@ -88,7 +86,6 @@ def test_cli_generates_qc_and_identity_outputs(tmp_path, sample_gff_path):
 
     postcards = outdir / "identity_postcards"
     assert (postcards / "chr_2_0_940.txt").exists()
-    assert (postcards / "chr_2_0_940.svg").exists()
     assert (postcards / "chr_2_0_900_0_940.txt").exists()
 
 

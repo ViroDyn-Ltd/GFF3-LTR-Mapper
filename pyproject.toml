@@ -19,7 +19,6 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Bio-Informatics"
 ]
 dependencies = [
-  "svgwrite>=1.4.3"
 ]
 
 [project.urls]

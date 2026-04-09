@@ -18,7 +18,6 @@ python -m gff3_ltr_map.cli \
   --outdir runs/example_chr2 \
   --summary runs/example_chr2/summary.tsv \
   --visual postcard+quantiles \
-  --out text+svg \
   --identity 'bins=0.90..0.94,>=0.94' \
   --top-k 5 \
   --min-n 25
@@ -84,8 +83,4 @@ LTR5:492 | INT:3932 | LTR3:4424
 Q25:4424bp  Q75:4424bp
 ```
 
-## SVG postcard example
-
-![](example_chr2.svg)
-
-Shown above: `chr_2:>=0.940` postcard (`runs/example_chr2/identity_postcards/chr_2_0_940.svg`) highlighting the median-length bars, quartile ticks, cohort warnings, and motif/TSD leaders.
+The aggregate postcard output is now ASCII-only. SVG postcard generation has been removed from the tool.
