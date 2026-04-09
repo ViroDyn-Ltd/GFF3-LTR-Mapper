@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use GFF3-LTR-Mapper, please cite the software and its Zenodo record."
+title: "GFF3-LTR-Mapper"
+type: software
+authors:
+  - name: "ViroDyn Ltd"
+version: "0.3.0"
+doi: 10.5281/zenodo.17576186
+license: MIT
+repository-code: "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper"
+url: "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper"
+abstract: >
+  GFF3-LTR-Mapper audits EDTA intact LTR GFF3 annotations, validates intact-element
+  structure, emits scientist-facing TSV summaries, and supports genome-scale and
+  cross-species coordinate-window comparisons.

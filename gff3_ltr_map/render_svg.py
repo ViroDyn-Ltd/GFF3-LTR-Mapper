@@ -52,24 +52,18 @@ def svg_map(
     mid_y = height / 2
     ltr_height = 24
     internal_height = 14
+    tsd_height = 12
 
     dwg = svgwrite.Drawing(size=(width, height))
     dwg.add(dwg.rect(insert=(0, 0), size=(width, height), fill=colors["BG"]))
 
-    arrow = "\u2192" if elem.strand == "+" else "\u2190"
+    arrow = "\u2192" if elem.strand == "+" else ("\u2190" if elem.strand == "-" else "\u2194")
     meta = (
-        f"{elem.scaffold}:{elem.id}  fam:{elem.superfamily or 'NA'}  span:{elem.start}-{elem.end}  "
-        f"ltr_id:{elem.ltr_identity if elem.ltr_identity is not None else 'NA'}  "
+        f"{elem.scaffold}:{elem.id}  fam:{elem.superfamily or 'NA'}  qc:{elem.qc_status}  "
+        f"span:{elem.start}-{elem.end}  ltr_id:{elem.ltr_identity if elem.ltr_identity is not None else 'NA'}  "
         f"motif:{elem.motif or 'NA'}  tsd:{elem.tsd or 'NA'}"
     )
-    dwg.add(
-        dwg.text(
-            arrow,
-            insert=(pad_x, 20),
-            font_size=16,
-            fill=colors["TEXT"],
-        )
-    )
+    dwg.add(dwg.text(arrow, insert=(pad_x, 20), font_size=16, fill=colors["TEXT"]))
     dwg.add(
         dwg.text(
             meta,
@@ -106,14 +100,39 @@ def svg_map(
             y_center=mid_y,
         )
 
-    for pos in [elem.tsd5, elem.tsd3]:
-        if pos is None:
-            continue
-        x = pad_x + _scale(pos, elem.start, elem.end, body_width)
+    if elem.tsd5_span:
+        draw_span(
+            elem.tsd5_span.start,
+            elem.tsd5_span.end,
+            color=colors["TSD"],
+            height_px=tsd_height,
+            y_center=mid_y - (ltr_height / 2) - 10,
+        )
+    elif elem.tsd5 is not None:
+        x = pad_x + _scale(elem.tsd5, elem.start, elem.end, body_width)
         dwg.add(
             dwg.line(
-                start=(x, mid_y - ltr_height / 2 - 6),
-                end=(x, mid_y + ltr_height / 2 + 6),
+                start=(x, mid_y - ltr_height / 2 - 8),
+                end=(x, mid_y + ltr_height / 2 + 8),
+                stroke=colors["TSD"],
+                stroke_width=2,
+            )
+        )
+
+    if elem.tsd3_span:
+        draw_span(
+            elem.tsd3_span.start,
+            elem.tsd3_span.end,
+            color=colors["TSD"],
+            height_px=tsd_height,
+            y_center=mid_y + (ltr_height / 2) + 10,
+        )
+    elif elem.tsd3 is not None:
+        x = pad_x + _scale(elem.tsd3, elem.start, elem.end, body_width)
+        dwg.add(
+            dwg.line(
+                start=(x, mid_y - ltr_height / 2 - 8),
+                end=(x, mid_y + ltr_height / 2 + 8),
                 stroke=colors["TSD"],
                 stroke_width=2,
             )

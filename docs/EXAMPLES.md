@@ -1,6 +1,6 @@
 # Example Outputs
 
-These captures come from a representative EDTA `intact` dataset and document a focused `chr_2` sweep.
+These captures come from representative EDTA `intact` datasets and document both a focused single-file sweep and a real cross-species comparison.
 
 ## Reproducing this example
 Set an environment variable (or substitute your own absolute path) pointing to the EDTA file:
@@ -24,6 +24,24 @@ python -m gff3_ltr_map.cli \
   --min-n 25
 ```
 Adjust `GFF3` or `--outdir` as needed for your workstation.
+
+## Cross-species TSV example bundled in the repository
+
+The repository includes one real comparison TSV:
+
+- `verified_output/cross_species_primary_window_1_3000000.tsv`
+
+This file was generated from the ViroDyn EDTA directory using:
+
+```bash
+gff3-ltr-map /path/to/edta_gff3_directory \
+  --outdir runs/cross_species_window \
+  --region 1-3000000 \
+  --identity all \
+  --visual none
+```
+
+It is sorted by strongest window signal first and is intended as the canonical example of the scientist-facing batch output.
 
 ## Identity-bin table (CLI & TSV excerpt)
 ```

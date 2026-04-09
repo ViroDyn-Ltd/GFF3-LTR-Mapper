@@ -1,0 +1,11 @@
+include LICENSE
+include README.md
+include CITATION.cff
+include pyproject.toml
+recursive-include gff3_ltr_map *.py
+prune tests
+prune docs
+prune verified_output
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.log

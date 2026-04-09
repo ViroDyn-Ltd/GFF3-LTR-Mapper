@@ -4,15 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "GFF3-LTR-Mapper"
-version = "0.1.0"
-description = "ASCII and SVG mini-maps for EDTA intact LTR elements from GFF3"
+version = "0.3.0"
+description = "QC, summarisation, and region-scale comparison of EDTA intact LTR GFF3 annotations"
 readme = "README.md"
 authors = [{name = "ViroDyn Ltd"}]
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.9"
+keywords = ["transposable-elements", "LTR", "EDTA", "GFF3", "bioinformatics", "genomics"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
 dependencies = [
   "svgwrite>=1.4.3"
 ]
+
+[project.urls]
+Homepage = "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper"
+Repository = "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper"
+Issues = "https://github.com/ViroDyn-Ltd/GFF3-LTR-Mapper/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -39,3 +52,8 @@ python_version = "3.9"
 warn_unused_configs = true
 check_untyped_defs = true
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+markers = [
+  "integration: tests that exercise external real-data inputs",
+]

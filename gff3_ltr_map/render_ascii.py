@@ -35,13 +35,18 @@ def ascii_map(elem: RepeatRegion, width: int = 100, ruler: bool = False) -> str:
     if elem.ltr5 and elem.ltr3 and elem.ltr3.start - elem.ltr5.end > 1:
         _fill(line, elem.ltr5.end + 1, elem.ltr3.start - 1, "-", elem, width)
 
-    if elem.tsd5 is not None:
+    if elem.tsd5_span:
+        _fill(line, elem.tsd5_span.start, elem.tsd5_span.end, "T", elem, width)
+    elif elem.tsd5 is not None:
         line[_scale(elem.tsd5, elem.start, elem.end, width)] = "T"
-    if elem.tsd3 is not None:
+
+    if elem.tsd3_span:
+        _fill(line, elem.tsd3_span.start, elem.tsd3_span.end, "D", elem, width)
+    elif elem.tsd3 is not None:
         line[_scale(elem.tsd3, elem.start, elem.end, width)] = "D"
 
     meta = (
-        f"> {elem.scaffold}:{elem.id}  fam:{elem.superfamily or 'NA'}  strand:{elem.strand}  "
+        f"> {elem.scaffold}:{elem.id}  fam:{elem.superfamily or 'NA'}  qc:{elem.qc_status}  "
         f"span:{elem.start}-{elem.end}  ltr_id:{elem.ltr_identity if elem.ltr_identity is not None else 'NA'}  "
         f"motif:{elem.motif or 'NA'}  tsd:{elem.tsd or 'NA'}"
     )
@@ -54,4 +59,5 @@ def ascii_map(elem: RepeatRegion, width: int = 100, ruler: bool = False) -> str:
     end_label = str(elem.end)
     pad = max(0, width - len(start_label) - len(end_label))
     ruler_line = start_label + (" " * pad) + end_label
-    return f"{meta}\n{bar}\n{ruler_line}\n"
+    legend_line = "legend: T=5' TSD, D=3' TSD, ==LTR, --internal"
+    return f"{meta}\n{bar}\n{ruler_line}\n{legend_line}\n"

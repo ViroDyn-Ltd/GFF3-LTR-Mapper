@@ -2,6 +2,7 @@
 *.pyc
 *.pyo
 *.log
+.pytest_cache/
 .build/
 build/
 dist/
@@ -9,5 +10,8 @@ dist/
 .out/
 .out*
 /.venv
+/.approval_tests_temp/
+tmp_*/
+runs/
 out/
 summary.tsv

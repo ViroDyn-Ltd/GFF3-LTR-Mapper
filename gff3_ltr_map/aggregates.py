@@ -6,7 +6,7 @@ import json
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from statistics import mean, median, pstdev
-from typing import Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence, Tuple
+from typing import List, Mapping, MutableMapping, Optional, Sequence, Tuple
 
 from .model import RepeatRegion
 
@@ -32,6 +32,9 @@ AGGREGATE_COLUMNS = [
     "length_bp_mean",
     "length_bp_median",
     "length_bp_stdev",
+    "tsd_len_mean",
+    "tsd_len_median",
+    "tsd_len_stdev",
     "ltr_asymmetry_mean",
     "density_per_Mb",
     "coverage_pct",
@@ -65,6 +68,9 @@ class AggregateRow:
     length_bp_mean: Optional[float]
     length_bp_median: Optional[float]
     length_bp_stdev: Optional[float]
+    tsd_len_mean: Optional[float]
+    tsd_len_median: Optional[float]
+    tsd_len_stdev: Optional[float]
     ltr_asymmetry_mean: Optional[float]
     density_per_Mb: Optional[float]
     coverage_pct: Optional[float]
@@ -83,7 +89,7 @@ def _describe(values: List[float]) -> Tuple[Optional[float], Optional[float], Op
     return mu, med, sd
 
 
-def _format_top_counts(values: Iterable[str], limit: int, total: int) -> Tuple[str, bool]:
+def format_top_counts(values: Sequence[str], limit: int, total: int) -> Tuple[str, bool]:
     counter = Counter(v for v in values if v)
     if not counter:
         return "", False
@@ -225,6 +231,7 @@ def _summarize_group(
     ltr3 = [e.ltr3_len for e in elems if e.ltr3_len is not None]
     internal = [e.internal_len for e in elems if e.internal_len is not None]
     length_bp = [e.length_bp for e in elems]
+    tsd_len = [e.tsd_len for e in elems if e.tsd_len is not None]
     asymmetries = [val for e in elems if (val := _ltr_asymmetry(e)) is not None]
     ages = (
         [val for e in elems if substitution_rate and (val := _age_my(e, substitution_rate)) is not None]
@@ -237,6 +244,7 @@ def _summarize_group(
     ltr3_stats = _describe(ltr3)
     internal_stats = _describe(internal)
     length_stats = _describe(length_bp)
+    tsd_stats = _describe(tsd_len)
 
     density = None
     coverage_pct = None
@@ -253,8 +261,16 @@ def _summarize_group(
     elif n == 0:
         notes.append("NO DATA")
 
-    motifs_text, motifs_warn = _format_top_counts(((e.motif or "") for e in elems), top_k, n)
-    tsd_text, tsd_warn = _format_top_counts(((e.tsd or "") for e in elems), top_k, n)
+    motifs_text, motifs_warn = format_top_counts(
+        [e.motif or "" for e in elems],
+        top_k,
+        n,
+    )
+    tsd_text, tsd_warn = format_top_counts(
+        [e.tsd or "" for e in elems],
+        top_k,
+        n,
+    )
     if motifs_warn:
         notes.append("motif consensus <40%")
     if tsd_warn:
@@ -280,6 +296,9 @@ def _summarize_group(
         length_bp_mean=length_stats[0],
         length_bp_median=length_stats[1],
         length_bp_stdev=length_stats[2],
+        tsd_len_mean=tsd_stats[0],
+        tsd_len_median=tsd_stats[1],
+        tsd_len_stdev=tsd_stats[2],
         ltr_asymmetry_mean=mean(asymmetries) if asymmetries else None,
         density_per_Mb=density,
         coverage_pct=coverage_pct,

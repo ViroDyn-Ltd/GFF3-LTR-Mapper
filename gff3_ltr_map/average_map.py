@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from collections import Counter
+from dataclasses import dataclass
 from statistics import mean, median
-from typing import Iterable, List, Optional, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple
 
 from .model import RepeatRegion
 
@@ -29,6 +29,8 @@ class AverageMapProfile:
     q25_len: Optional[float]
     q75_len: Optional[float]
     strand_summary: str
+    pct_with_both_tsd: float
+    median_tsd_len: Optional[float]
 
     @property
     def has_content(self) -> bool:
@@ -47,11 +49,7 @@ def build_average_profile(
 
     if identity_range:
         min_id, max_id = identity_range
-        filtered = [
-            elem
-            for elem in elements
-            if _within_identity(elem, min_id, max_id)
-        ]
+        filtered = [elem for elem in elements if _within_identity(elem, min_id, max_id)]
     else:
         filtered = list(elements)
 
@@ -63,13 +61,13 @@ def build_average_profile(
     ltr3 = [elem.ltr3_len for elem in filtered if elem.ltr3_len is not None]
     internal = [elem.internal_len for elem in filtered if elem.internal_len is not None]
     totals = [elem.length_bp for elem in filtered]
+    tsd_lengths = [elem.tsd_len for elem in filtered if elem.tsd_len is not None]
 
     ltr5_len = median(ltr5) if ltr5 else 0.0
     ltr3_len = median(ltr3) if ltr3 else 0.0
     total_len = median(totals) if totals else ltr5_len + ltr3_len
     internal_len = median(internal) if internal else max(total_len - ltr5_len - ltr3_len, 0.0)
 
-    # Ensure components add up sensibly
     if total_len <= 0:
         return None
     remainder = total_len - (ltr5_len + internal_len + ltr3_len)
@@ -102,6 +100,8 @@ def build_average_profile(
         q25_len=q25,
         q75_len=q75,
         strand_summary=strand_summary,
+        pct_with_both_tsd=(sum(1 for elem in filtered if elem.has_both_tsd) / len(filtered) * 100),
+        median_tsd_len=median(tsd_lengths) if tsd_lengths else None,
     )
 
 
@@ -205,7 +205,15 @@ def average_svg_map(
         y = table_start_y + idx * table_line_height
         dwg.add(dwg.text(row, insert=(pad, y), font_size=12, fill=colors["TEXT"]))
 
-    def draw(length: float, color_key: str, height_px: float, *, label: Optional[str] = None, label_color: str = "#FFFFFF", label_offset: float = 0.0) -> Tuple[float, float]:
+    def draw(
+        length: float,
+        color_key: str,
+        height_px: float,
+        *,
+        label: Optional[str] = None,
+        label_color: str = "#FFFFFF",
+        label_offset: float = 0.0,
+    ) -> Tuple[float, float]:
         start = draw.position
         draw.position += length
         x1 = pad + svg_scale(start, 0, profile.total_len, body_width)
@@ -265,7 +273,14 @@ def average_svg_map(
                     stroke_width=2,
                 )
             )
-            dwg.add(dwg.text(q_label, insert=(x + 4, mid_y - ltr_height - 4), font_size=10, fill=colors["TEXT"]))
+            dwg.add(
+                dwg.text(
+                    q_label,
+                    insert=(x + 4, mid_y - ltr_height - 4),
+                    font_size=10,
+                    fill=colors["TEXT"],
+                )
+            )
 
     return dwg
 
@@ -346,5 +361,6 @@ def _build_table_rows(profile: AverageMapProfile, identity_span: str) -> List[st
     )
     rows.append(f"LTR5 median: {profile.ltr5_len:.1f} bp   LTR3 median: {profile.ltr3_len:.1f} bp")
     rows.append(f"Internal median: {profile.internal_len:.1f} bp")
+    rows.append(f"TSD pair: {profile.pct_with_both_tsd:.1f}%   median TSD len: {profile.median_tsd_len or 'NA'}")
     rows.append(profile.strand_summary)
     return rows

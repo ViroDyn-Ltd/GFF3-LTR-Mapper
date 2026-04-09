@@ -10,6 +10,8 @@ __all__ = [
     "summary",
     "aggregates",
     "average_map",
+    "batch",
+    "scientist_view",
 ]
 
 try:
