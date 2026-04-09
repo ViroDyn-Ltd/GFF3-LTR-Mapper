@@ -44,10 +44,6 @@ The example/documentation archive contains:
 - output examples
 - one real example TSV
 
-## Suggested Citation
-
-Please cite the software record associated with this Zenodo deposition together with the project metadata in `CITATION.cff`.
-
 ## Repository
 
 GitHub repository:
