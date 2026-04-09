@@ -1,6 +1,6 @@
 # GFF3-LTR-Mapper
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19489691.svg)](https://doi.org/10.5281/zenodo.19489691)
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19489691-blue.svg)](https://doi.org/10.5281/zenodo.19489691)
 
 A command-line workflow for auditing and summarising EDTA intact LTR GFF3 annotations into QC reports, cohort tables, cross-sample comparison TSVs, and optional ASCII postcards. The parser is strict about intact-LTR structure, keeps non-destructive QC traces for every `repeat_region`, and can run either on a single GFF3 or an entire directory of EDTA outputs. Distributed under the [MIT License](LICENSE).
 
